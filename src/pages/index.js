@@ -94,25 +94,29 @@ function reducer(state, action) {
       return {
         ...state,
         columnNumber: state.columnNumber + 1,
-        columns: [...state.columns, { unit: "1fr" }]
+        columns: [...state.columns, { unit: "1fr" }],
+        grid: [...state.grid, ...expandArray(state.grid.length)]
       };
     case "removeColumn":
       return {
         ...state,
         columnNumber: state.columnNumber - 1,
-        columns: state.columns.slice(0, -1)
+        columns: state.columns.slice(0, -1),
+        grid: state.grid.slice(0, -5)
       };
     case "addRow":
       return {
         ...state,
         rowNumber: state.rowNumber + 1,
-        rows: [...state.rows, { unit: "1fr" }]
+        rows: [...state.rows, { unit: "1fr" }],
+        grid: [...state.grid, ...expandArray(state.grid.length)]
       };
     case "removeRow":
       return {
         ...state,
         rowNumber: state.rowNumber - 1,
-        rows: state.rows.slice(0, -1)
+        rows: state.rows.slice(0, -1),
+        grid: state.grid.slice(0, -5)
       };
 
     default:
@@ -174,8 +178,8 @@ const IndexPage = () => {
 
   const changeRows = e => {
     let num = Number(e.target.value);
-    if (num > columns.length) {
-      dispatch({ type: "adddRow" });
+    if (num > rows.length) {
+      dispatch({ type: "addRow" });
     } else {
       dispatch({ type: "removeRow" });
     }
@@ -215,10 +219,10 @@ const IndexPage = () => {
       }
     }
     for (let key in hash) {
-      if (hash[key] > 1) {
+      if (hash[key] >= 2) {
         styles.push(`repeat(${hash[key]}, ${key})`);
       } else {
-        styles.push(hash[key]);
+        styles.push(`${hash[key]}fr`);
       }
     }
     return styles.join(" ");
