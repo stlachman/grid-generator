@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useReducer } from "react";
 import styled from "@emotion/styled";
 import Column from "../components/column";
 import Button from "../components/button";
@@ -62,39 +62,80 @@ function expandArray(len) {
   return arr;
 }
 
+const initialState = {
+  rows: [
+    { unit: "1fr" },
+    { unit: "1fr" },
+    { unit: "1fr" },
+    { unit: "1fr" },
+    { unit: "1fr" }
+  ],
+  columns: [
+    { unit: "1fr" },
+    { unit: "1fr" },
+    { unit: "1fr" },
+    { unit: "1fr" },
+    { unit: "1fr" }
+  ],
+  columnNumber: 5,
+  rowNumber: 5,
+  grid: [...Array(25).keys()],
+  columnGap: 0,
+  rowGap: 0
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "updateRowGap":
+      return { ...state, rowGap: action.payload };
+    case "updateColumnGap":
+      return { ...state, columnGap: action.payload };
+    case "addColumn":
+      return {
+        ...state,
+        columnNumber: state.columnNumber + 1,
+        columns: [...state.columns, { unit: "1fr" }]
+      };
+    case "removeColumn":
+      return {
+        ...state,
+        columnNumber: state.columnNumber - 1,
+        columns: state.columns.slice(0, -1)
+      };
+    case "addRow":
+      return {
+        ...state,
+        rowNumber: state.rowNumber + 1,
+        rows: [...state.rows, { unit: "1fr" }]
+      };
+    case "removeRow":
+      return {
+        ...state,
+        rowNumber: state.rowNumber - 1,
+        rows: state.rows.slice(0, -1)
+      };
+
+    default:
+      throw new Error();
+  }
+}
+
 const IndexPage = () => {
-  const [grid, setGrid] = useState([...Array(25).keys()]);
-  const [rows, setRows] = useState(["1fr", "1fr", "1fr", "1fr", "1fr"]);
-  const [columns, setColumns] = useState(["1fr", "1fr", "1fr", "1fr", "1fr"]);
-  const [columnGap, setColumnGap] = useState(0);
-  const [rowGap, setRowGap] = useState(0);
   const [show, setShow] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
   const codeRef = useRef(null);
 
-  const changeColumns = e => {
-    let num = Number(e.target.value);
-    if (num > columns.length) {
-      let arr = expandArray(grid.length);
-      setGrid(grid.slice().concat(arr));
-      setColumns([...columns, "1fr"]);
-    } else {
-      setGrid(grid.slice(0, grid.length - 5));
-      setColumns(columns.slice(0, -1));
-    }
-  };
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const changeRows = e => {
-    let num = Number(e.target.value);
-    if (num > rows.length) {
-      let arr = expandArray(grid.length);
-      setGrid(grid.slice().concat(arr));
-      setRows([...rows, "1fr"]);
-    } else {
-      setGrid(grid.slice(0, grid.length - 5));
-      setRows(rows.slice(0, -1));
-    }
-  };
+  const {
+    grid,
+    rowNumber,
+    columnNumber,
+    columns,
+    rows,
+    columnGap,
+    rowGap
+  } = state;
 
   const showModal = () => {
     setShow(true);
@@ -122,14 +163,55 @@ const IndexPage = () => {
     }, 750);
   }, [copyStatus]);
 
+  const changeColumns = e => {
+    let num = Number(e.target.value);
+    if (num > columns.length) {
+      dispatch({ type: "addColumn" });
+    } else {
+      dispatch({ type: "removeColumn" });
+    }
+  };
+
+  const changeRows = e => {
+    let num = Number(e.target.value);
+    if (num > columns.length) {
+      dispatch({ type: "adddRow" });
+    } else {
+      dispatch({ type: "removeRow" });
+    }
+  };
+
+  const updateColumnValue = (e, i) => {
+    // setColumns(
+    //   columns.map((column, idx) => {
+    //     if (idx === i) {
+    //       return { unit: e.target.value };
+    //     } else {
+    //       return column;
+    //     }
+    //   })
+    // );
+    dispatch({
+      type: "updateColumnValue",
+      payload: { unit: e.target.value, index: i }
+    });
+  };
+
+  const updateRowValue = (e, i) => {
+    dispatch({
+      type: "updateRowValue",
+      payload: { unit: e.target.value, index: i }
+    });
+  };
+
   function determineGrid(item) {
     let styles = [];
     let hash = {};
-    for (let style of item) {
-      if (hash[style]) {
-        hash[style]++;
+    for (let { unit } of item) {
+      if (hash[unit]) {
+        hash[unit]++;
       } else {
-        hash[style] = 1;
+        hash[unit] = 1;
       }
     }
     for (let key in hash) {
@@ -141,30 +223,6 @@ const IndexPage = () => {
     }
     return styles.join(" ");
   }
-
-  const updateColumnValue = (e, i) => {
-    setColumns(
-      columns.map((column, idx) => {
-        if (idx === i) {
-          return e.target.value;
-        } else {
-          return column;
-        }
-      })
-    );
-  };
-
-  const updateRowValue = (e, i) => {
-    setRows(
-      rows.map((row, idx) => {
-        if (idx === i) {
-          return e.target.value;
-        } else {
-          return row;
-        }
-      })
-    );
-  };
 
   let gridStyles = {
     gridTemplateColumns: determineGrid(columns),
@@ -192,17 +250,20 @@ const IndexPage = () => {
           <InputGrid
             style={{ gridTemplateColumns: gridStyles.gridTemplateColumns }}
           >
-            {columns.map((column, i) => (
-              <input
-                key={i}
-                style={{ maxWidth: 20 }}
-                type="text"
-                onChange={e => updateColumnValue(e, i)}
-                name="column-value"
-                id="column-value"
-                value={column}
-              />
-            ))}
+            {columns.map(({ unit }, i) => {
+              return (
+                <div key={i}>
+                  <input
+                    style={{ maxWidth: 20 }}
+                    type="text"
+                    onChange={e => updateColumnValue(e, i)}
+                    name="column-value"
+                    id="column-value"
+                    value={unit}
+                  />
+                </div>
+              );
+            })}
           </InputGrid>
           <GridContainer>
             <Grid style={gridStyles}>
@@ -211,16 +272,17 @@ const IndexPage = () => {
               })}
             </Grid>
             <InputRow style={{ gridTemplateRows: gridStyles.gridTemplateRows }}>
-              {rows.map((row, i) => (
-                <input
-                  key={i}
-                  style={{ maxWidth: 20 }}
-                  type="text"
-                  onChange={e => updateRowValue(e, i)}
-                  name="row-value"
-                  id="row-value"
-                  value={row}
-                />
+              {rows.map(({ unit }, i) => (
+                <div key={i}>
+                  <input
+                    style={{ maxWidth: 20 }}
+                    type="text"
+                    onChange={e => updateRowValue(e, i)}
+                    name="row-value"
+                    id="row-value"
+                    value={unit}
+                  />
+                </div>
               ))}
             </InputRow>
           </GridContainer>
@@ -232,7 +294,7 @@ const IndexPage = () => {
               type="number"
               name="rows"
               onChange={changeRows}
-              value={Number(rows.length)}
+              value={rowNumber}
               id="rows"
               min="1"
               max="12"
@@ -242,7 +304,7 @@ const IndexPage = () => {
               type="number"
               name="columns"
               onChange={changeColumns}
-              value={Number(columns.length)}
+              value={columnNumber}
               id="columns"
               min="1"
               max="12"
@@ -251,7 +313,12 @@ const IndexPage = () => {
             <input
               type="number"
               name="column-gap"
-              onChange={e => setColumnGap(Number(e.target.value))}
+              onChange={e =>
+                dispatch({
+                  type: "updateColumnGap",
+                  payload: Number(e.target.value)
+                })
+              }
               value={columnGap}
               id="column-gap"
               min="0"
@@ -261,13 +328,17 @@ const IndexPage = () => {
             <input
               type="number"
               name="row-gap"
-              onChange={e => setRowGap(Number(e.target.value))}
+              onChange={e =>
+                dispatch({
+                  type: "updateRowGap",
+                  payload: Number(e.target.value)
+                })
+              }
               value={rowGap}
               id="row-gap"
               min="0"
               max="15"
             />
-
             <Button handleClick={showModal} text={"Generate Code"} />
           </Fieldset>
         </Aside>
