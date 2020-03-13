@@ -118,9 +118,30 @@ function reducer(state, action) {
         rows: state.rows.slice(0, -1),
         grid: state.grid.slice(0, -5)
       };
-
+    case "updateColumnValue":
+      return {
+        ...state,
+        columns: state.columns.map((column, idx) => {
+          if (idx === action.payload.index) {
+            return { unit: action.payload.unit };
+          } else {
+            return column;
+          }
+        })
+      };
+    case "updateRowValue":
+      return {
+        ...state,
+        rows: state.rows.map((row, idx) => {
+          if (idx === action.payload.index) {
+            return { unit: action.payload.unit };
+          } else {
+            return row;
+          }
+        })
+      };
     default:
-      throw new Error();
+      return state;
   }
 }
 
@@ -130,7 +151,7 @@ const IndexPage = () => {
   const codeRef = useRef(null);
 
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  console.log(state.columns);
   const {
     grid,
     rowNumber,
@@ -186,15 +207,6 @@ const IndexPage = () => {
   };
 
   const updateColumnValue = (e, i) => {
-    // setColumns(
-    //   columns.map((column, idx) => {
-    //     if (idx === i) {
-    //       return { unit: e.target.value };
-    //     } else {
-    //       return column;
-    //     }
-    //   })
-    // );
     dispatch({
       type: "updateColumnValue",
       payload: { unit: e.target.value, index: i }
@@ -210,20 +222,8 @@ const IndexPage = () => {
 
   function determineGrid(item) {
     let styles = [];
-    let hash = {};
     for (let { unit } of item) {
-      if (hash[unit]) {
-        hash[unit]++;
-      } else {
-        hash[unit] = 1;
-      }
-    }
-    for (let key in hash) {
-      if (hash[key] >= 2) {
-        styles.push(`repeat(${hash[key]}, ${key})`);
-      } else {
-        styles.push(`${hash[key]}fr`);
-      }
+      styles.push(unit);
     }
     return styles.join(" ");
   }
