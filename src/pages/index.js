@@ -256,7 +256,10 @@ const IndexPage = () => {
           >
             {columns.map(({ unit }, i) => {
               return (
-                <div key={i}>
+                <div
+                  key={i}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
                   <input
                     style={{ maxWidth: 20 }}
                     type="text"
@@ -277,7 +280,14 @@ const IndexPage = () => {
             </Grid>
             <InputRow style={{ gridTemplateRows: gridStyles.gridTemplateRows }}>
               {rows.map(({ unit }, i) => (
-                <div key={i}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center"
+                  }}
+                  key={i}
+                >
                   <input
                     style={{ maxWidth: 20 }}
                     type="text"
