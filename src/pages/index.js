@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect, useReducer } from "react";
+import { expandArray, determineGrid } from "../utils/index";
 import styled from "@emotion/styled";
 import Column from "../components/column";
 import Button from "../components/button";
 import Modal from "../components/modal";
 import Code from "../components/code";
+import Aside from "../components/aside";
+import Input from "../components/input";
 
-const Container = styled.div`
+const FlexContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: ${({ justifyContent }) =>
+    justifyContent ? justifyContent : "flex-start"};
 `;
 
 const InputGrid = styled.section`
@@ -20,10 +24,6 @@ const InputRow = styled.section`
   height: 100%;
   position: relative;
   left: -30px;
-`;
-
-const Flex = styled.div`
-  display: flex;
 `;
 
 const Main = styled.main`
@@ -44,24 +44,6 @@ const Grid = styled.section`
   height: 100%;
   position: absolute;
 `;
-
-const Aside = styled.aside`
-  background: #eee;
-`;
-
-const Fieldset = styled.fieldset`
-  display: flex;
-  flex-direction: column;
-  border: 0;
-`;
-
-function expandArray(len) {
-  let arr = [];
-  for (let i = 0; i < 5; i++) {
-    arr.push(len + i + 1);
-  }
-  return arr;
-}
 
 const initialState = {
   rows: [
@@ -189,8 +171,8 @@ const IndexPage = () => {
   }, [copyStatus]);
 
   const changeColumns = e => {
-    let num = Number(e.target.value);
-    if (num > columns.length) {
+    let currentColumns = Number(e.target.value);
+    if (currentColumns > columns.length) {
       dispatch({ type: "addColumn" });
     } else {
       dispatch({ type: "removeColumn" });
@@ -198,8 +180,8 @@ const IndexPage = () => {
   };
 
   const changeRows = e => {
-    let num = Number(e.target.value);
-    if (num > rows.length) {
+    let currentRows = Number(e.target.value);
+    if (currentRows > rows.length) {
       dispatch({ type: "addRow" });
     } else {
       dispatch({ type: "removeRow" });
@@ -220,22 +202,19 @@ const IndexPage = () => {
     });
   };
 
-  function determineGrid(item) {
-    let styles = [];
-    for (let i = 0; i < item.length; i++) {
-      if (item[i + 1] && item[i].unit === item[i + 1].unit) {
-        let j = i + 1;
-        while (j < item.length && item[i].unit === item[j].unit) {
-          j++;
-        }
-        styles.push(`repeat(${j - i}, ${item[i].unit})`);
-        i += j - 1;
-      } else {
-        styles.push(item[i].unit);
-      }
-    }
-    return styles.join(" ");
-  }
+  const updateRowGap = e => {
+    dispatch({
+      type: "updateRowGap",
+      payload: Number(e.target.value)
+    });
+  };
+
+  const updateColumnGap = e => {
+    dispatch({
+      type: "updateColumnGap",
+      payload: Number(e.target.value)
+    });
+  };
 
   let gridStyles = {
     gridTemplateColumns: determineGrid(columns),
@@ -248,36 +227,32 @@ const IndexPage = () => {
     <>
       <Modal show={show} setCopyStatus={setCopyStatus} handleClose={hideModal}>
         {copyStatus ? (
-          <Flex>
+          <FlexContainer>
             <h4>{copyStatus}</h4>
-          </Flex>
+          </FlexContainer>
         ) : (
           <Code codeRef={codeRef} gridStyles={gridStyles} />
         )}
-        <Flex>
+        <FlexContainer>
           <Button small text={"Copy Code"} handleClick={copyToClipboard} />
-        </Flex>
+        </FlexContainer>
       </Modal>
-      <Container>
+      <FlexContainer>
+        <h2>Grid Generator</h2>
+      </FlexContainer>
+      <FlexContainer justifyContent={"space-around"}>
         <Main>
           <InputGrid
             style={{ gridTemplateColumns: gridStyles.gridTemplateColumns }}
           >
-            {columns.map(({ unit }, i) => {
+            {columns.map((_, i) => {
               return (
-                <div
+                <Input
                   key={i}
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <input
-                    style={{ maxWidth: 20 }}
-                    type="text"
-                    onBlur={e => updateColumnValue(e, i)}
-                    name="column-value"
-                    id="column-value"
-                    defaultValue={"1fr"}
-                  />
-                </div>
+                  type={"column"}
+                  updateValue={updateColumnValue}
+                  index={i}
+                />
               );
             })}
           </InputGrid>
@@ -288,84 +263,30 @@ const IndexPage = () => {
               })}
             </Grid>
             <InputRow style={{ gridTemplateRows: gridStyles.gridTemplateRows }}>
-              {rows.map(({ unit }, i) => (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center"
-                  }}
+              {rows.map((_, i) => (
+                <Input
                   key={i}
-                >
-                  <input
-                    style={{ maxWidth: 20 }}
-                    type="text"
-                    onChange={e => updateRowValue(e, i)}
-                    name="row-value"
-                    id="row-value"
-                    value={unit}
-                  />
-                </div>
+                  type="row"
+                  updateValue={updateRowValue}
+                  index={i}
+                />
               ))}
             </InputRow>
           </GridContainer>
         </Main>
-        <Aside>
-          <Fieldset>
-            <label htmlFor="rows">Rows</label>
-            <input
-              type="number"
-              name="rows"
-              onChange={changeRows}
-              value={rowNumber}
-              id="rows"
-              min="1"
-              max="12"
-            />
-            <label htmlFor="columns">Columns</label>
-            <input
-              type="number"
-              name="columns"
-              onChange={changeColumns}
-              value={columnNumber}
-              id="columns"
-              min="1"
-              max="12"
-            />
-            <label htmlFor="column-gap">Column Gap (px)</label>
-            <input
-              type="number"
-              name="column-gap"
-              onChange={e =>
-                dispatch({
-                  type: "updateColumnGap",
-                  payload: Number(e.target.value)
-                })
-              }
-              value={columnGap}
-              id="column-gap"
-              min="0"
-              max="15"
-            />
-            <label htmlFor="row-gap">Row Gap (px)</label>
-            <input
-              type="number"
-              name="row-gap"
-              onChange={e =>
-                dispatch({
-                  type: "updateRowGap",
-                  payload: Number(e.target.value)
-                })
-              }
-              value={rowGap}
-              id="row-gap"
-              min="0"
-              max="15"
-            />
-            <Button handleClick={showModal} text={"Grid Code"} />
-          </Fieldset>
-        </Aside>
-      </Container>
+
+        <Aside
+          changeRows={changeRows}
+          rowNumber={rowNumber}
+          changeColumns={changeColumns}
+          columnNumber={columnNumber}
+          columnGap={columnGap}
+          rowGap={rowGap}
+          updateColumnGap={updateColumnGap}
+          updateRowGap={updateRowGap}
+          showModal={showModal}
+        />
+      </FlexContainer>
     </>
   );
 };
