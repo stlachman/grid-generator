@@ -12,6 +12,7 @@ const Container = styled.div`
 
 const InputGrid = styled.section`
   display: grid;
+  margin-bottom: 10px;
 `;
 
 const InputRow = styled.section`
@@ -223,7 +224,9 @@ const IndexPage = () => {
   function determineGrid(item) {
     let styles = [];
     for (let { unit } of item) {
-      styles.push(unit);
+      if (unit.trim().length > 0) {
+        styles.push(unit);
+      }
     }
     return styles.join(" ");
   }
@@ -263,10 +266,10 @@ const IndexPage = () => {
                   <input
                     style={{ maxWidth: 20 }}
                     type="text"
-                    onChange={e => updateColumnValue(e, i)}
+                    onBlur={e => updateColumnValue(e, i)}
                     name="column-value"
                     id="column-value"
-                    value={unit}
+                    defaultValue={"1fr"}
                   />
                 </div>
               );
