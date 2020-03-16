@@ -152,7 +152,6 @@ const IndexPage = () => {
   const codeRef = useRef(null);
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(state.columns);
   const {
     grid,
     rowNumber,
@@ -223,9 +222,16 @@ const IndexPage = () => {
 
   function determineGrid(item) {
     let styles = [];
-    for (let { unit } of item) {
-      if (unit.trim().length > 0) {
-        styles.push(unit);
+    for (let i = 0; i < item.length; i++) {
+      if (item[i + 1] && item[i].unit === item[i + 1].unit) {
+        let j = i + 1;
+        while (j < item.length && item[i].unit === item[j].unit) {
+          j++;
+        }
+        styles.push(`repeat(${j - i}, ${item[i].unit})`);
+        i += j - 1;
+      } else {
+        styles.push(item[i].unit);
       }
     }
     return styles.join(" ");
@@ -356,7 +362,7 @@ const IndexPage = () => {
               min="0"
               max="15"
             />
-            <Button handleClick={showModal} text={"Generate Code"} />
+            <Button handleClick={showModal} text={"Grid Code"} />
           </Fieldset>
         </Aside>
       </Container>
