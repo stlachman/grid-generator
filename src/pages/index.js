@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useReducer } from "react";
 import { expandArray, determineGrid } from "../utils/index";
 import styled from "@emotion/styled";
+import Layout from "../components/layout";
 import Column from "../components/column";
 import Button from "../components/button";
 import Modal from "../components/modal";
@@ -224,7 +225,7 @@ const IndexPage = () => {
   };
 
   return (
-    <>
+    <Layout>
       <Modal show={show} setCopyStatus={setCopyStatus} handleClose={hideModal}>
         {copyStatus ? (
           <FlexContainer>
@@ -287,7 +288,7 @@ const IndexPage = () => {
           showModal={showModal}
         />
       </FlexContainer>
-    </>
+    </Layout>
   );
 };
 

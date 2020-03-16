@@ -66,7 +66,8 @@ export default function({
           min="0"
           max="15"
         />
-        <Button handleClick={showModal} text={"Grid Code"} />
+
+        <Button margin="1em 0 0 0" handleClick={showModal} text={"Grid Code"} />
       </Fieldset>
     </Aside>
   );
