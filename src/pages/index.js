@@ -13,6 +13,7 @@ const FlexContainer = styled.div`
   display: flex;
   justify-content: ${({ justifyContent }) =>
     justifyContent ? justifyContent : "flex-start"};
+  margin: ${({ margin }) => (margin ? margin : "0")};
 `;
 
 const InputGrid = styled.section`
@@ -20,11 +21,15 @@ const InputGrid = styled.section`
   margin-bottom: 10px;
 `;
 
+const Title = styled.h1`
+  font-size: 2rem;
+`;
+
 const InputRow = styled.section`
   display: grid;
   height: 100%;
   position: relative;
-  left: -30px;
+  left: -50px;
 `;
 
 const Main = styled.main`
@@ -40,7 +45,7 @@ const GridContainer = styled.div`
 
 const Grid = styled.section`
   display: grid;
-  border: 1px solid;
+  border: 1px dashed #1a202c;
   width: 100%;
   height: 100%;
   position: absolute;
@@ -228,7 +233,7 @@ const IndexPage = () => {
     <Layout>
       <Modal show={show} setCopyStatus={setCopyStatus} handleClose={hideModal}>
         {copyStatus ? (
-          <FlexContainer>
+          <FlexContainer justifyContent="center">
             <h4>{copyStatus}</h4>
           </FlexContainer>
         ) : (
@@ -238,8 +243,8 @@ const IndexPage = () => {
           <Button small text={"Copy Code"} handleClick={copyToClipboard} />
         </FlexContainer>
       </Modal>
-      <FlexContainer>
-        <h2>Grid Generator</h2>
+      <FlexContainer justifyContent="center" margin="0 0 2rem 0">
+        <Title>CSS Grid Generator</Title>
       </FlexContainer>
       <FlexContainer justifyContent={"space-around"}>
         <Main>

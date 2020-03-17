@@ -12,6 +12,17 @@ const Fieldset = styled.fieldset`
   border: 0;
 `;
 
+const Label = styled.label`
+  display: inline-block;
+  margin-top: 1em;
+`;
+
+const Input = styled.input`
+  margin-top: 0.5em;
+  padding: 0.5em 0.5em 0.5em 0.25em;
+  font-size: 0.75rem;
+`;
+
 export default function({
   changeRows,
   rowNumber,
@@ -26,8 +37,8 @@ export default function({
   return (
     <Aside>
       <Fieldset>
-        <label htmlFor="rows">Rows</label>
-        <input
+        <Label htmlFor="rows">Rows</Label>
+        <Input
           type="number"
           name="rows"
           onChange={changeRows}
@@ -36,8 +47,8 @@ export default function({
           min="1"
           max="12"
         />
-        <label htmlFor="columns">Columns</label>
-        <input
+        <Label htmlFor="columns">Columns</Label>
+        <Input
           type="number"
           name="columns"
           onChange={changeColumns}
@@ -46,8 +57,8 @@ export default function({
           min="1"
           max="12"
         />
-        <label htmlFor="column-gap">Column Gap (px)</label>
-        <input
+        <Label htmlFor="column-gap">Column Gap (px)</Label>
+        <Input
           type="number"
           name="column-gap"
           onChange={updateColumnGap}
@@ -56,8 +67,8 @@ export default function({
           min="0"
           max="15"
         />
-        <label htmlFor="row-gap">Row Gap (px)</label>
-        <input
+        <Label htmlFor="row-gap">Row Gap (px)</Label>
+        <Input
           type="number"
           name="row-gap"
           onChange={updateRowGap}
@@ -67,7 +78,7 @@ export default function({
           max="15"
         />
 
-        <Button margin="1em 0 0 0" handleClick={showModal} text={"Grid Code"} />
+        <Button margin="1em 0 0 0" handleClick={showModal} text={"Grab Code"} />
       </Fieldset>
     </Aside>
   );
