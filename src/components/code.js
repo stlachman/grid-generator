@@ -14,15 +14,22 @@ const Code = styled.code`
   font-weight: 500;
   background-color: #eee;
   padding: 2em 1em;
+  display: block;
 `;
 
 export default function({ gridStyles, codeRef }) {
   return (
     <Pre>
       <Code ref={codeRef}>
-        display: grid; grid-template-rows: {gridStyles.gridTemplateRows};
-        grid-template-columns: {gridStyles.gridTemplateColumns}; row-gap:
-        {gridStyles.rowGap}; column-gap: {gridStyles.columnGap};
+        <span>display: grid;</span>
+        <br />
+        <span>grid-template-rows: {gridStyles.gridTemplateRows};</span>
+        <br />
+        <span>grid-template-columns: {gridStyles.gridTemplateColumns};</span>
+        <br />
+        <span>row-gap:{gridStyles.rowGap};</span>
+        <br />
+        <span>column-gap: {gridStyles.columnGap};</span>
       </Code>
     </Pre>
   );

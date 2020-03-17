@@ -225,7 +225,7 @@ const IndexPage = () => {
   };
 
   return (
-    <Layout>
+    <Layout key={Date.now()}>
       <Modal show={show} setCopyStatus={setCopyStatus} handleClose={hideModal}>
         {copyStatus ? (
           <FlexContainer>
