@@ -84,28 +84,28 @@ function reducer(state, action) {
         ...state,
         columnNumber: state.columnNumber + 1,
         columns: [...state.columns, { unit: "1fr" }],
-        grid: [...state.grid, ...expandArray(state.grid.length)]
+        grid: [...Array((state.columnNumber + 1) * state.rowNumber).keys()]
       };
     case "removeColumn":
       return {
         ...state,
         columnNumber: state.columnNumber - 1,
         columns: state.columns.slice(0, -1),
-        grid: state.grid.slice(0, -5)
+        grid: [...Array((state.columnNumber - 1) * state.rowNumber).keys()]
       };
     case "addRow":
       return {
         ...state,
         rowNumber: state.rowNumber + 1,
         rows: [...state.rows, { unit: "1fr" }],
-        grid: [...state.grid, ...expandArray(state.grid.length)]
+        grid: [...Array(state.columnNumber * (state.rowNumber + 1)).keys()]
       };
     case "removeRow":
       return {
         ...state,
         rowNumber: state.rowNumber - 1,
         rows: state.rows.slice(0, -1),
-        grid: state.grid.slice(0, -5)
+        grid: [...Array(state.columnNumber * (state.rowNumber - 1)).keys()]
       };
     case "updateColumnValue":
       return {
@@ -149,6 +149,7 @@ const IndexPage = () => {
     columnGap,
     rowGap
   } = state;
+  console.log(grid);
 
   const showModal = () => {
     setShow(true);
