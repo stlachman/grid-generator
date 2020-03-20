@@ -14,6 +14,8 @@ const FlexContainer = styled.div`
   justify-content: ${({ justifyContent }) =>
     justifyContent ? justifyContent : "flex-start"};
   margin: ${({ margin }) => (margin ? margin : "0")};
+  padding: ${({ padding }) => (padding ? padding : "0")};
+  flex-wrap: ${({ flexWrap }) => (flexWrap ? flexWrap : "nowrap")};
 `;
 
 const InputGrid = styled.section`
@@ -33,8 +35,12 @@ const InputRow = styled.section`
 `;
 
 const Main = styled.main`
-  width: calc(65vw - 40px);
-  height: calc(65vh - 40px);
+  flex: 0 0 100%;
+  @media (min-width: 900px) {
+    width: calc(65vw - 40px);
+    height: calc(65vh - 40px);
+    flex: none;
+  }
 `;
 
 const GridContainer = styled.div`
@@ -250,7 +256,11 @@ const IndexPage = () => {
       <FlexContainer justifyContent="center" margin="0 0 2rem 0">
         <Title>CSS Grid Generator</Title>
       </FlexContainer>
-      <FlexContainer justifyContent={"space-around"}>
+      <FlexContainer
+        padding={"0 70px"}
+        justifyContent={"space-around"}
+        flexWrap="wrap"
+      >
         <Main>
           <InputGrid
             style={{ gridTemplateColumns: gridStyles.gridTemplateColumns }}

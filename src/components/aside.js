@@ -4,6 +4,11 @@ import Button from "../components/button";
 
 const Aside = styled.aside`
   background: #e2e8f0;
+  flex: 0 0 50%;
+  margin-top: 50px;
+  @media (min-width: 900px) {
+    flex: none;
+  }
 `;
 
 const Fieldset = styled.fieldset`
