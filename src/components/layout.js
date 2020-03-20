@@ -9,7 +9,7 @@ const Layout = ({ children }) => {
           body {
             font-family: -apple-system, system-ui, BlinkMacSystemFont,
               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-seri;
-            background-color: #fff;
+            background-color: #e2e8f0;
             color: #1a202c;
           }
         `}

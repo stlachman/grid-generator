@@ -8,8 +8,12 @@ const InputContainer = styled.div`
 `;
 
 const Input = styled.input`
-  border: 1px solid #1a202c;
-  padding: 0.5em;
+  border: 2px solid #f6ad55;
+  background-color: #fff;
+  border-radius: 0.25rem;
+  padding: 0.75em;
+  color: #000;
+  font-weight: bold;
 `;
 
 export default function({ updateValue, index, type }) {

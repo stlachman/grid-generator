@@ -7,19 +7,22 @@ const ModalContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.45);
   z-index: 1000;
   display: ${({ show }) => (show ? "block" : "none")};
 `;
 
 const ModalContent = styled.div`
   position: fixed;
-  background-color: white;
+  background-color: #f7fafc;
+  box-shadow: 0 6px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.09);
+  border-radius: 0.5rem;
   width: 100%;
   top: 50%;
   left: 50%;
   min-height: 100vh;
-  padding-bottom: 1em;
+  padding: 1.5em 2em;
   transform: translate(-50%, -50%);
   @media (min-width: 460px) {
     width: 40%;

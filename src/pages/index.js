@@ -45,7 +45,7 @@ const GridContainer = styled.div`
 
 const Grid = styled.section`
   display: grid;
-  border: 1px dashed #1a202c;
+  border: 1px solid #f6ad55;
   width: 100%;
   height: 100%;
   position: absolute;
@@ -235,10 +235,13 @@ const IndexPage = () => {
       <Modal show={show} setCopyStatus={setCopyStatus} handleClose={hideModal}>
         {copyStatus ? (
           <FlexContainer justifyContent="center">
-            <h4>{copyStatus}</h4>
+            <h2>{copyStatus}</h2>
           </FlexContainer>
         ) : (
-          <Code codeRef={codeRef} gridStyles={gridStyles} />
+          <>
+            <h2 style={{ textAlign: "center" }}>Grid Code</h2>
+            <Code codeRef={codeRef} gridStyles={gridStyles} />
+          </>
         )}
         <FlexContainer>
           <Button small text={"Copy Code"} handleClick={copyToClipboard} />

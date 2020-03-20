@@ -11,25 +11,33 @@ const Pre = styled.pre`
 `;
 
 const Code = styled.code`
-  font-weight: 500;
-  background-color: #eee;
+  font-weight: 600;
+  background-color: #e2e8f0;
   padding: 2em 1em;
   display: block;
+`;
+
+const Styles = styled.span`
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
 `;
 
 export default function({ gridStyles, codeRef }) {
   return (
     <Pre>
       <Code ref={codeRef}>
-        <span>display: grid;</span>
+        <Styles>display: grid;</Styles>
         <br />
-        <span>grid-template-rows: {gridStyles.gridTemplateRows};</span>
+        <Styles>grid-template-rows: {gridStyles.gridTemplateRows};</Styles>
         <br />
-        <span>grid-template-columns: {gridStyles.gridTemplateColumns};</span>
+        <Styles>
+          grid-template-columns: {gridStyles.gridTemplateColumns};
+        </Styles>
         <br />
-        <span>row-gap:{gridStyles.rowGap};</span>
+        <Styles>row-gap:{gridStyles.rowGap};</Styles>
         <br />
-        <span>column-gap: {gridStyles.columnGap};</span>
+        <Styles>column-gap: {gridStyles.columnGap};</Styles>
       </Code>
     </Pre>
   );

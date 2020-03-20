@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import Button from "../components/button";
 
 const Aside = styled.aside`
-  background: #eee;
+  background: #e2e8f0;
 `;
 
 const Fieldset = styled.fieldset`
@@ -15,12 +15,16 @@ const Fieldset = styled.fieldset`
 const Label = styled.label`
   display: inline-block;
   margin-top: 1em;
+  color: #000;
 `;
 
 const Input = styled.input`
   margin-top: 0.5em;
-  padding: 0.5em 0.5em 0.5em 0.25em;
+  padding: 0.65em 0.5em 0.65em 0.45em;
   font-size: 0.75rem;
+  border: 2px solid #f6ad55;
+  background-color: #fff;
+  border-radius: 0.25rem;
 `;
 
 export default function({
